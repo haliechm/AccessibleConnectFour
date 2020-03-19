@@ -3,6 +3,8 @@
     
     var currentCol = 1;
     var playerYellow = true;
+    var numFilled = 0;
+  
     
     
     window.onload = function() {
@@ -12,16 +14,21 @@
     highlightFirstArrow();
     }
 
+    
 
 
 function chooseArrow() {
     document.getElementById("left").removeAttribute("style");
     document.getElementById("right").setAttribute("style", "background: 	#FFC0CB;");
+    numFilled++;
     var j = currentCol;
     if(!finished){
                     for (var t = 6;t>0;t--){
                         if(testClass(t,j,'')){
                             colorField(t,j,players[current]);
+                            if (filled()) {
+                                newGame("It's a tie! Play again to see who the real winner is");
+                            }
                             if(horizontalWon(t,j) || verticalWon(t,j) || diagonalLtrWon(t,j) || diagonalRtlWon(t,j)){
                                 finished = true;
                                 newGame(wonMessage.replace("%s",players[current]));
@@ -182,23 +189,23 @@ function logKey(e) {
     
     // enter key
      if (e.keyCode == 13) {
-         document.getElementById("left").removeAttribute("style");
-         document.getElementById("right").setAttribute("style", "background: 	#FFC0CB;");
+//         document.getElementById("left").removeAttribute("style");
+//         document.getElementById("right").setAttribute("style", "background: 	#FFC0CB;");
         chooseArrow();
         
     }
     
     // space bar
     if (e.keyCode == 32) {
-        document.getElementById("right").removeAttribute("style");
-        document.getElementById("left").setAttribute("style", "background: 	#FFC0CB;");
+//        document.getElementById("right").removeAttribute("style");
+//        document.getElementById("left").setAttribute("style", "background: 	#FFC0CB;");
        highlightNextArrow();
     }
     
      // right arrow
     if (e.keyCode == 39) {
-        document.getElementById("right").removeAttribute("style");
-        document.getElementById("left").setAttribute("style", "background: 	#FFC0CB;");
+//        document.getElementById("right").removeAttribute("style");
+//        document.getElementById("left").setAttribute("style", "background: 	#FFC0CB;");
        highlightNextArrow();
     }
     
@@ -216,6 +223,7 @@ function logKey(e) {
       
          document.getElementById("left").removeAttribute("style");
          document.getElementById("right").setAttribute("style", "background: 	#FFC0CB;");
+        
         chooseArrow();
 //         nextTurn();
     }
@@ -242,15 +250,26 @@ function highlightFirstArrow() {
     }
 }
     
+function filled() {
+    if(numFilled >= 42) {
+        return true;
+    } 
+    return false;
+}
+    
     
     var                      
     start = function(){
         finished = false;
+        currentCol = 1;
+        current = 0;
+        playerYellow = true;
         changePlayer();
     },  		
     newGame = function(message){
         if (confirm(message)){
-            start();
+//            start();
+            document.location.reload();
             forAllCells(emptyField);
         }
     },        

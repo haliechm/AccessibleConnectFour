@@ -9,11 +9,11 @@ button,table,#game,body,td {
 }
 
 #game,#gameboard {
-    width:620px;
+    width:67%;
 }
 
 #gameboard,.leg {
-    background:#00f;
+    background:#5a4a8f;
 }
 
 #gameboard,.leg,#gameboard td,#r {
@@ -34,15 +34,19 @@ button,table,#game,body,td {
 }
 
 #gameboard .red {
-    background:#f00;
+    background:#f25555;
 }
 
 #gameboard .yellow {
-    background:#ff0;
+    background:#f5ea78;
 }
 
 #r,#gameboard td {
     border-color:#333;
+}
+
+#r {
+    font-size: 20px;
 }
 
 .leg {
@@ -97,6 +101,10 @@ button.choice {
     border-color: azure;
 }
 
+button:hover {
+    cursor: pointer;
+}
+
 
 
 div#game {
@@ -104,3 +112,6 @@ div#game {
   height: var(--available-height);
   width: 60vw;
 }
+
+
+
