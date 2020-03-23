@@ -1,3 +1,4 @@
+
 body {
     text-align:center;
     font-family: Helvetica, Arial, "Lucida Grande", sans-serif; 
@@ -9,7 +10,8 @@ button,table,#game,body,td {
 }
 
 #game,#gameboard {
-    width:67%;
+/*    width:620px;*/
+    width: 76%;
 }
 
 #gameboard,.leg {
@@ -47,13 +49,6 @@ button,table,#game,body,td {
 
 #r {
     font-size: 20px;
-}
-
-.leg {
-    border-top-width:0;
-    height:100px;
-    width:20px;
-    border-radius:0 0 12px 12px;
 }
 
 .left {
@@ -106,12 +101,8 @@ button:hover {
 }
 
 
-
 div#game {
   flex: 3;
   height: var(--available-height);
   width: 60vw;
 }
-
-
-

@@ -4,34 +4,67 @@
     var currentCol = 1;
     var playerYellow = true;
     var numFilled = 0;
-  
+    var human = true;
+    var easy = true;
     
-    
-    window.onload = function() {
-	console.log("Window loaded");
-//	makeBoard(COLUMNS,ROWS);
-//	updatePlayerOnScreen();
+window.onload = function() {
+    console.log("Window loaded");
     highlightFirstArrow();
+}
+
+function computerAIEasy() {
+    console.log("In computer AI");
+    var notFoundYet = true;
+    currentCol = Math.ceil(Math.random() * 7);
+    // choose random column for computer
+    while(notFoundYet) {
+        if(testClass(1, currentCol, '')) {
+            notFoundYet=false;
+        } else {
+            currentCol = Math.ceil(Math.random() * 7);
+        }
     }
+    
+    console.log("in ai - col: " + currentCol);
+    chooseArrow();
+
+    return;
+}
 
     
-
-
 function chooseArrow() {
     document.getElementById("left").removeAttribute("style");
     document.getElementById("right").setAttribute("style", "background: 	#FFC0CB;");
     numFilled++;
     var j = currentCol;
+    var delayInMilliseconds = 300;
     if(!finished){
                     for (var t = 6;t>0;t--){
                         if(testClass(t,j,'')){
                             colorField(t,j,players[current]);
+                            
                             if (filled()) {
-                                newGame("It's a tie! Play again to see who the real winner is");
+                                if (human) {
+                                    setTimeout(function() {
+                                        newGameHuman("It's a tie! Play again to see who the real winner is");
+                                    }, delayInMilliseconds);
+                                } else {
+                                    setTimeout(function() {
+                                        newGameComputer("It's a tie! Play again to beat the computer");
+                                    }, delayInMilliseconds);
+                                }
                             }
                             if(horizontalWon(t,j) || verticalWon(t,j) || diagonalLtrWon(t,j) || diagonalRtlWon(t,j)){
                                 finished = true;
-                                newGame(wonMessage.replace("%s",players[current]));
+                                if (human) {
+                                    setTimeout(function() {
+                                        newGameHuman(wonMessage.replace("%s",players[current]));
+                                    }, delayInMilliseconds);
+                                } else {
+                                    setTimeout(function() {
+                                        newGameComputer(wonMessage.replace("%s",players[current]));
+                                    }, delayInMilliseconds);
+                                }
                             } else {
                                 changePlayer();
                             }
@@ -45,7 +78,7 @@ function chooseArrow() {
 
 function highlightNextArrow() {
     document.getElementById("right").removeAttribute("style");
-        document.getElementById("left").setAttribute("style", "background: 	#FFC0CB;");
+    document.getElementById("left").setAttribute("style", "background: 	#FFC0CB;");
     
     
     var currentArrow = document.getElementById("c-1-" + currentCol);
@@ -68,7 +101,6 @@ function highlightNextArrow() {
         }
     }
     
-//    currentCol < 7 ? currentCol++ : currentCol=1;
     
     if (playerYellow){
     var nextArrow = document.getElementById("c-1-" + currentCol).setAttribute("style", "background: yellow;");
@@ -161,57 +193,59 @@ function highlightPreviousArrow() {
             currentCol = findPreviousAvailable();
         }
     }
-//    currentCol > 1 ? currentCol-- : currentCol=7;
+
     
     if (playerYellow){
-    var nextArrow = document.getElementById("c-1-" + currentCol).setAttribute("style", "background: yellow;");
+        var nextArrow = document.getElementById("c-1-" + currentCol).setAttribute("style", "background: yellow;");
     } else {
         var nextArrow = document.getElementById("c-1-" + currentCol).setAttribute("style", "background: red;");
     }
 }
-    function alli() {
-        newGame(newGameMessage)
+    function resetGameHuman() {
+        newGameHuman("Are you sure you want to start a new game playing against a human?")
     }
+    
+    function resetGameComputer() {
+        newGameComputer("Are you sure you want to start a new game playing against the computer?")
+    }
+    
+    
     
     document.getElementById("left").addEventListener("click", highlightNextArrow);
     document.getElementById("right").addEventListener("click", chooseArrow);
-    document.getElementById("r").addEventListener("click", alli);
+    document.getElementById("rH").addEventListener("click", resetGameHuman);
+    document.getElementById("rC").addEventListener("click", resetGameComputer);
+   
    
     document.addEventListener('keydown', logKey);
 
 function logKey(e) {
     
     if (!finished) {
-    // stops anything from happen with holding down key
+        
+    // stops anything from happen when holding down a key
     if (e.repeat) {
         return;
     }
     
     // enter key
      if (e.keyCode == 13) {
-//         document.getElementById("left").removeAttribute("style");
-//         document.getElementById("right").setAttribute("style", "background: 	#FFC0CB;");
         chooseArrow();
         
     }
-    
+     
     // space bar
     if (e.keyCode == 32) {
-//        document.getElementById("right").removeAttribute("style");
-//        document.getElementById("left").setAttribute("style", "background: 	#FFC0CB;");
        highlightNextArrow();
     }
     
      // right arrow
     if (e.keyCode == 39) {
-//        document.getElementById("right").removeAttribute("style");
-//        document.getElementById("left").setAttribute("style", "background: 	#FFC0CB;");
        highlightNextArrow();
     }
     
     // left arrow
     if (e.keyCode == 37) {
-       
         document.getElementById("right").removeAttribute("style");
         document.getElementById("left").setAttribute("style", "background: 	#FFC0CB;");
         highlightPreviousArrow();
@@ -220,12 +254,10 @@ function logKey(e) {
     
     // down arrow
     if (e.keyCode == 40) {
-      
-         document.getElementById("left").removeAttribute("style");
-         document.getElementById("right").setAttribute("style", "background: 	#FFC0CB;");
-        
+        document.getElementById("left").removeAttribute("style");
+        document.getElementById("right").setAttribute("style", "background: 	#FFC0CB;"); 
         chooseArrow();
-//         nextTurn();
+
     }
     }
     
@@ -238,6 +270,14 @@ function nextTurn() {
     currentCol = 7;
     currentCol = findNextAvailable();
     highlightFirstArrow();
+    
+    if (!playerYellow && !human && easy && !finished) {
+        console.log("yay here");
+        var delayInMilliseconds = 300;
+        setTimeout(function() {
+            computerAIEasy();
+        }, delayInMilliseconds);
+    }
 }
 
 
@@ -257,22 +297,64 @@ function filled() {
     return false;
 }
     
-    
+   
+// Some of the following code is credited to John Slegers
     var                      
     start = function(){
+        document.getElementById("left").addEventListener("click", highlightNextArrow);
+    document.getElementById("right").addEventListener("click", chooseArrow);
         finished = false;
         currentCol = 1;
         current = 0;
         playerYellow = true;
         changePlayer();
+        numFilled = 0;
     },  		
-    newGame = function(message){
+    newGameHuman = function(message){
         if (confirm(message)){
-//            start();
-            document.location.reload();
+//            document.location.reload();
+//            forAllCells(emptyField);
+            document.getElementById("c-1-" + currentCol).removeAttribute("style", "background: yellow;");
+            document.getElementById("c-1-" + currentCol).removeAttribute("style", "background: red;");
+            human = true;
+            start();
             forAllCells(emptyField);
+            highlightFirstArrow();
+        } else {
+            if(finished) {
+                
+                 document.getElementById("c-1-" + currentCol).removeAttribute("style", "background: yellow;");
+            document.getElementById("c-1-" + currentCol).removeAttribute("style", "background: red;");
+                
+                document.getElementById("left").removeEventListener("click", highlightNextArrow);
+                document.getElementById("right").removeEventListener("click", chooseArrow);
+            }
         }
-    },        
+    },   
+      newGameComputer = function(message){
+        if (confirm(message)){
+//            document.location.reload();
+//            forAllCells(emptyField);
+            
+            document.getElementById("c-1-" + currentCol).removeAttribute("style", "background: yellow;");
+            document.getElementById("c-1-" + currentCol).removeAttribute("style", "background: red;");
+            human = false;
+            easy = true;
+            start();
+            forAllCells(emptyField);
+            highlightFirstArrow();
+        } else {
+            console.log("finished: " + finished);
+            if(finished) {
+                console.log("here in finished");
+                 document.getElementById("c-1-" + currentCol).removeAttribute("style", "background: yellow;");
+                document.getElementById("c-1-" + currentCol).removeAttribute("style", "background: red;");
+                
+                document.getElementById("left").removeEventListener("click", highlightNextArrow);
+                document.getElementById("right").removeEventListener("click", chooseArrow);
+            }
+        }
+    },  
     element = function(id){
         return doc.getElementById(id);
     },
@@ -324,26 +406,6 @@ function filled() {
     testClass = function(i,j,value){
         return cell(i,j).className == value;
     },
-//    addCellBehavior = function(i,j){
-//        cell(i,j).onclick = function(j){
-//            return function(){
-//                if(!finished){
-//                    for (var t = 6;t>0;t--){
-//                        if(testClass(t,j,'')){
-//                            colorField(t,j,players[current]);
-//                            if(horizontalWon(t,j) || verticalWon(t,j) || diagonalLtrWon(t,j) || diagonalRtlWon(t,j)){
-//                                finished = true;
-//                                newGame(wonMessage.replace("%s",players[current]));
-//                            } else {
-//                                changePlayer();
-//                            }
-//                            break;
-//                        }
-//                    }
-//                }
-//            }
-//        }(j);
-//    },
     players = [value("a"),value("b")],         
     current = 0,
     newGameMessage = value("n"),
@@ -351,7 +413,9 @@ function filled() {
     finished;
     start();
     forAllCells(addCellBehavior);
-    element("r").onclick = function(){
-        newGame(newGameMessage)
+    element("rH").onclick = function(){
+        newGameHuman(newGameMessage)
     };
 })(document);
+
+
